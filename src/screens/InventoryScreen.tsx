@@ -13,6 +13,7 @@ const InventoryScreen = () => {
     const [showSearch, setShowSearch] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [materialsInput, setMaterialsInput] = useState("");
+    const [showOwnedOnly, setShowOwnedOnly] = useState(false);
 
     const componentTypes: { type: ComponentType | "all"; icon: string; label: string }[] = [
         { type: "all", icon: "📦", label: "All" },
@@ -26,12 +27,15 @@ const InventoryScreen = () => {
         .filter((c) => selectedType === "all" || c.type === selectedType)
         .filter((c) => searchQuery === "" || c.name.toLowerCase().includes(searchQuery.toLowerCase()));
 
-    const componentsWithInventory = filteredComponents.map((c) => ({
-        ...c,
-        quantity: inventory.components.get(c.id) || 0,
-    }));
+    const componentsWithInventory = filteredComponents
+        .map((c) => ({
+            ...c,
+            quantity: inventory.components.get(c.id) || 0,
+        }))
+        .filter((c) => !showOwnedOnly || c.quantity > 0);
 
     const totalComponents = Array.from(inventory.components.values()).reduce((sum, qty) => sum + qty, 0);
+    const ownedComponentCount = Array.from(inventory.components.entries()).filter(([_, qty]) => qty > 0).length;
     const toolsCount =
         (inventory.tools.standardCraftingTools ? 1 : 0) +
         (inventory.tools.masterCraftingTools ? 1 : 0) +
@@ -59,6 +63,12 @@ const InventoryScreen = () => {
                     <Text style={styles.headerTitle}>🎒 Inventory</Text>
                     <TouchableOpacity onPress={() => setShowSearch(!showSearch)} style={styles.headerIcon}>
                         <Text style={styles.headerIconText}>🔍</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => setShowOwnedOnly(!showOwnedOnly)}
+                        style={[styles.headerIcon, showOwnedOnly && styles.headerIconActive]}
+                    >
+                        <Text style={styles.headerIconText}>✓</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => setShowToolsModal(true)} style={styles.headerIcon}>
                         <Text style={styles.headerIconText}>⚙️</Text>
@@ -430,6 +440,9 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         marginLeft: 8,
+    },
+    headerIconActive: {
+        backgroundColor: "#4a9d5f",
     },
     headerIconText: {
         fontSize: 18,

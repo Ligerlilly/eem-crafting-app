@@ -1,14 +1,17 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal, FlatList } from "react-native";
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal, FlatList, TextInput } from "react-native";
 import { useInventory } from "../context/InventoryContext";
 import { allRecipes } from "../data/recipes";
-import { Recipe } from "../types";
+import { Recipe, RecipeType } from "../types";
 
 const CraftScreen = () => {
     const { inventory, removeComponent, removeMaterials, addCraftingSession } = useInventory();
     const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
     const [showRecipeSelector, setShowRecipeSelector] = useState(false);
     const [tinkerRoll, setTinkerRoll] = useState<number | null>(null);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [filterType, setFilterType] = useState<RecipeType | "all">("all");
+    const [showCraftableOnly, setShowCraftableOnly] = useState(false);
 
     const canCraftRecipe = (recipe: Recipe): boolean => {
         // Check components
@@ -229,24 +232,134 @@ const CraftScreen = () => {
                 </View>
             )}
 
-            {/* Recipe Selector Modal */}
+            {/* Recipe Selector Modal - Enhanced */}
             <Modal visible={showRecipeSelector} animationType="slide" transparent={true}>
                 <View style={styles.modalOverlay}>
                     <View style={styles.modalContent}>
-                        <Text style={styles.modalTitle}>Select Recipe</Text>
-                        <FlatList
-                            data={allRecipes}
-                            keyExtractor={(item) => item.id}
-                            renderItem={({ item }) => (
-                                <TouchableOpacity style={styles.recipeItem} onPress={() => handleSelectRecipe(item)}>
-                                    <Text style={styles.recipeItemName}>{item.name}</Text>
-                                    <Text style={styles.recipeItemType}>
-                                        {item.type === "alchemy" ? "⚗️" : item.type === "cooking" ? "🔥" : "🔨"}
-                                    </Text>
+                        {/* Header */}
+                        <View style={styles.modalHeader}>
+                            <Text style={styles.modalTitle}>Select Recipe</Text>
+                            <TouchableOpacity
+                                style={styles.filterToggle}
+                                onPress={() => setShowCraftableOnly(!showCraftableOnly)}
+                            >
+                                <Text
+                                    style={[
+                                        styles.filterToggleText,
+                                        showCraftableOnly && styles.filterToggleTextActive,
+                                    ]}
+                                >
+                                    {showCraftableOnly ? "✓ Craftable" : "All"}
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+
+                        {/* Search */}
+                        <View style={styles.searchContainer}>
+                            <TextInput
+                                style={styles.searchInput}
+                                placeholder="Search recipes..."
+                                placeholderTextColor="#a0826d"
+                                value={searchQuery}
+                                onChangeText={setSearchQuery}
+                            />
+                            {searchQuery !== "" && (
+                                <TouchableOpacity onPress={() => setSearchQuery("")} style={styles.clearSearchButton}>
+                                    <Text style={styles.clearSearchText}>×</Text>
                                 </TouchableOpacity>
                             )}
+                        </View>
+
+                        {/* Type Filters */}
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.typeFilters}>
+                            {[
+                                { type: "all" as RecipeType | "all", icon: "📜", label: "All" },
+                                { type: "alchemy" as RecipeType, icon: "⚗️", label: "Alchemy" },
+                                { type: "cooking" as RecipeType, icon: "🔥", label: "Cooking" },
+                                { type: "crafting" as RecipeType, icon: "🔨", label: "Crafting" },
+                            ].map((item) => (
+                                <TouchableOpacity
+                                    key={item.type}
+                                    style={[
+                                        styles.typeFilterPill,
+                                        filterType === item.type && styles.typeFilterPillActive,
+                                    ]}
+                                    onPress={() => setFilterType(item.type)}
+                                >
+                                    <Text style={styles.typeFilterIcon}>{item.icon}</Text>
+                                    <Text
+                                        style={[
+                                            styles.typeFilterText,
+                                            filterType === item.type && styles.typeFilterTextActive,
+                                        ]}
+                                    >
+                                        {item.label}
+                                    </Text>
+                                </TouchableOpacity>
+                            ))}
+                        </ScrollView>
+
+                        {/* Recipe List */}
+                        <FlatList
+                            data={allRecipes
+                                .filter((r) => filterType === "all" || r.type === filterType)
+                                .filter(
+                                    (r) =>
+                                        searchQuery === "" || r.name.toLowerCase().includes(searchQuery.toLowerCase())
+                                )
+                                .filter((r) => !showCraftableOnly || canCraftRecipe(r))}
+                            keyExtractor={(item) => item.id}
+                            renderItem={({ item }) => {
+                                const craftable = canCraftRecipe(item);
+                                return (
+                                    <TouchableOpacity
+                                        style={[styles.recipeItem, craftable && styles.recipeItemCraftable]}
+                                        onPress={() => handleSelectRecipe(item)}
+                                    >
+                                        <View style={styles.recipeItemContent}>
+                                            <Text style={styles.recipeItemName}>
+                                                {craftable ? "✓ " : ""}
+                                                {item.name}
+                                            </Text>
+                                            <Text style={styles.recipeItemEffect} numberOfLines={1}>
+                                                {item.effect}
+                                            </Text>
+                                            <View style={styles.recipeItemFooter}>
+                                                <Text style={styles.recipeItemMeta}>
+                                                    📦 {item.components.length} • ⏱ {item.craftingTime}
+                                                    {item.requiresForge && " • 🔥"}
+                                                </Text>
+                                            </View>
+                                        </View>
+                                        <Text style={styles.recipeItemType}>
+                                            {item.type === "alchemy" ? "⚗️" : item.type === "cooking" ? "🔥" : "🔨"}
+                                        </Text>
+                                    </TouchableOpacity>
+                                );
+                            }}
+                            ListEmptyComponent={
+                                <View style={styles.emptyRecipeList}>
+                                    <Text style={styles.emptyRecipeText}>
+                                        {searchQuery
+                                            ? "No recipes found"
+                                            : showCraftableOnly
+                                            ? "No craftable recipes"
+                                            : "No recipes available"}
+                                    </Text>
+                                </View>
+                            }
+                            style={styles.recipeList}
                         />
-                        <TouchableOpacity style={styles.closeButton} onPress={() => setShowRecipeSelector(false)}>
+
+                        <TouchableOpacity
+                            style={styles.closeButton}
+                            onPress={() => {
+                                setShowRecipeSelector(false);
+                                setSearchQuery("");
+                                setFilterType("all");
+                                setShowCraftableOnly(false);
+                            }}
+                        >
                             <Text style={styles.closeButtonText}>Cancel</Text>
                         </TouchableOpacity>
                     </View>
@@ -443,25 +556,136 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: "bold",
         color: "#f5e6d3",
-        marginBottom: 16,
+        flex: 1,
     },
-    recipeItem: {
+    modalHeader: {
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        paddingVertical: 12,
-        paddingHorizontal: 16,
+        marginBottom: 16,
+    },
+    filterToggle: {
+        backgroundColor: "#3d2415",
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+        borderRadius: 12,
+    },
+    filterToggleText: {
+        fontSize: 12,
+        color: "#a0826d",
+        fontWeight: "600",
+    },
+    filterToggleTextActive: {
+        color: "#4a9d5f",
+    },
+    searchContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        marginBottom: 12,
+    },
+    searchInput: {
+        flex: 1,
+        backgroundColor: "#3d2415",
+        color: "#f5e6d3",
+        paddingHorizontal: 12,
+        paddingVertical: 8,
+        borderRadius: 8,
+        fontSize: 14,
+    },
+    clearSearchButton: {
+        width: 28,
+        height: 28,
+        borderRadius: 14,
+        backgroundColor: "#4a2c2a",
+        alignItems: "center",
+        justifyContent: "center",
+        marginLeft: 8,
+    },
+    clearSearchText: {
+        color: "#a0826d",
+        fontSize: 18,
+        fontWeight: "bold",
+    },
+    typeFilters: {
+        maxHeight: 40,
+        marginBottom: 12,
+    },
+    typeFilterPill: {
+        flexDirection: "row",
+        alignItems: "center",
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+        marginRight: 8,
+        borderRadius: 12,
+        backgroundColor: "#3d2415",
+    },
+    typeFilterPillActive: {
+        backgroundColor: "#4a2c2a",
+    },
+    typeFilterIcon: {
+        fontSize: 14,
+        marginRight: 4,
+    },
+    typeFilterText: {
+        fontSize: 12,
+        color: "#a0826d",
+        fontWeight: "600",
+    },
+    typeFilterTextActive: {
+        color: "#d4a574",
+    },
+    recipeList: {
+        flex: 1,
+        marginBottom: 12,
+    },
+    recipeItem: {
+        flexDirection: "row",
+        paddingVertical: 10,
+        paddingHorizontal: 12,
         backgroundColor: "#3d2415",
         borderRadius: 8,
         marginBottom: 8,
+        borderWidth: 1,
+        borderColor: "#4a2c2a",
+    },
+    recipeItemCraftable: {
+        borderColor: "#4a9d5f",
+        borderWidth: 2,
+    },
+    recipeItemContent: {
+        flex: 1,
+        marginRight: 8,
     },
     recipeItemName: {
         fontSize: 16,
         color: "#f5e6d3",
-        flex: 1,
+        fontWeight: "600",
+        marginBottom: 4,
+    },
+    recipeItemEffect: {
+        fontSize: 12,
+        color: "#a0826d",
+        marginBottom: 4,
+    },
+    recipeItemFooter: {
+        flexDirection: "row",
+        alignItems: "center",
+    },
+    recipeItemMeta: {
+        fontSize: 11,
+        color: "#8b7355",
     },
     recipeItemType: {
         fontSize: 20,
+    },
+    emptyRecipeList: {
+        padding: 40,
+        alignItems: "center",
+    },
+    emptyRecipeText: {
+        fontSize: 14,
+        color: "#a0826d",
+        textAlign: "center",
     },
     closeButton: {
         backgroundColor: "#4a2c2a",

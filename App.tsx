@@ -10,8 +10,6 @@ import { InventoryProvider } from "./src/context/InventoryContext";
 // Screens
 import InventoryScreen from "./src/screens/InventoryScreen";
 import RecipesScreen from "./src/screens/RecipesScreen";
-import CraftScreen from "./src/screens/CraftScreen";
-import RegionsScreen from "./src/screens/RegionsScreen";
 import HistoryScreen from "./src/screens/HistoryScreen";
 
 const Tab = createBottomTabNavigator();
@@ -53,22 +51,6 @@ export default function App() {
                             options={{
                                 title: "Recipes",
                                 tabBarLabel: "Recipes",
-                            }}
-                        />
-                        <Tab.Screen
-                            name="Craft"
-                            component={CraftScreen}
-                            options={{
-                                title: "Craft",
-                                tabBarLabel: "Craft",
-                            }}
-                        />
-                        <Tab.Screen
-                            name="Regions"
-                            component={RegionsScreen}
-                            options={{
-                                title: "Regions",
-                                tabBarLabel: "Regions",
                             }}
                         />
                         <Tab.Screen

@@ -1270,6 +1270,42 @@ export const cookingRecipes: Recipe[] = [
         ],
         craftingTime: '1 Hour',
         requiresForge: false
+    },
+    {
+        id: 'kitchen-sink-noodles',
+        name: 'Kitchen Sink Noodles',
+        type: 'cooking',
+        rarity: 'common',
+        effect: 'Heal 3 Courage.',
+        components: [
+            { componentId: 'sinkworm-tallow', componentName: 'Sinkworm Tallow', quantity: 1 }
+        ],
+        craftingTime: '1 Hour',
+        requiresForge: false
+    },
+    {
+        id: 'slipperbeak-gumbo',
+        name: 'Slipperbeak Gumbo',
+        type: 'cooking',
+        rarity: 'common',
+        effect: 'Cures BLINDED.',
+        components: [
+            { componentId: 'slipperbeak', componentName: 'Slipperbeak', quantity: 1 }
+        ],
+        craftingTime: '1 Hour',
+        requiresForge: false
+    },
+    {
+        id: 'filleted-gentleman',
+        name: 'Filleted Gentleman',
+        type: 'cooking',
+        rarity: 'common',
+        effect: 'Gain +1 Charm for the session.',
+        components: [
+            { componentId: 'whiskered-gentleman', componentName: 'Whiskered Gentleman', quantity: 1 }
+        ],
+        craftingTime: '1 Hour',
+        requiresForge: false
     }
 ];
 
@@ -1998,6 +2034,237 @@ export const craftingRecipes: Recipe[] = [
         itemSlots: 1,
         craftingTime: '6+1d6 Hours',
         requiresForge: false
+    },
+    {
+        id: 'ramgore-hammer',
+        name: 'Ramgore Hammer',
+        type: 'crafting',
+        rarity: 'rare',
+        effect: '[bonk] Once every Combat, a Hit target becomes Stunned.',
+        components: [
+            { componentId: 'ramgore-horns', componentName: 'Ramgore Horns', quantity: 1 },
+            { componentId: 'cumberstone', componentName: 'Cumberstone', quantity: 1 }
+        ],
+        materialsRequired: 5,
+        itemCost: 'gold',
+        itemSlots: 3,
+        craftingTime: '1d6 Days',
+        requiresForge: true,
+        properties: ['Magnificent', 'bonk', 'hefty']
+    },
+    {
+        id: 'rubbery-morb-shield',
+        name: 'Rubbery Morb Shield',
+        type: 'crafting',
+        rarity: 'rare',
+        effect: 'Large Shield. Inflict Blocked Dread back to the attacker.',
+        components: [
+            { componentId: 'morb-bark', componentName: 'Morb Bark', quantity: 1 },
+            { componentId: 'sinkworm-tallow', componentName: 'Sinkworm Tallow', quantity: 1 }
+        ],
+        materialsRequired: 9,
+        itemCost: 'gold',
+        itemSlots: 3,
+        craftingTime: '1d6 Days',
+        requiresForge: false,
+        properties: ['Magnificent']
+    },
+    {
+        id: 'sharpfin-armor',
+        name: 'Sharpfin Armor',
+        type: 'crafting',
+        rarity: 'rare',
+        effect: 'Medium Armor. Attackers suffer 1 Dread when they Hit the wearer (ignores Block).',
+        components: [
+            { componentId: 'emerald-sharpfin', componentName: 'Emerald Sharpfin', quantity: 1 }
+        ],
+        materialsRequired: 12,
+        itemCost: 'gold',
+        itemSlots: 2,
+        craftingTime: '1d6 Days',
+        requiresForge: false,
+        properties: ['Magnificent']
+    },
+    {
+        id: 'snagtooth-shiv',
+        name: 'Snagtooth Shiv',
+        type: 'crafting',
+        rarity: 'common',
+        effect: '[bleed] Causes bleeding on hit.',
+        components: [
+            { componentId: 'snagbunny-tooth', componentName: 'Snagbunny Tooth', quantity: 1 }
+        ],
+        materialsRequired: 3,
+        itemCost: 'silver',
+        itemSlots: 1,
+        craftingTime: '6+1d6 Hours',
+        requiresForge: false,
+        properties: ['bleed']
+    },
+    {
+        id: 'spongey-bandages',
+        name: 'Spongey Bandages',
+        type: 'crafting',
+        rarity: 'common',
+        effect: 'Cures Bleeding and heals 1d4 Courage.',
+        components: [
+            { componentId: 'muckroot', componentName: 'Muckroot', quantity: 1 },
+            { componentId: 'spongey-wheeler', componentName: 'Spongey Wheeler', quantity: 1 }
+        ],
+        materialsRequired: 2,
+        itemCost: 'copper',
+        itemSlots: 1,
+        craftingTime: '1d6 Hours',
+        requiresForge: false
+    },
+    {
+        id: 'spiraled-main-gauche',
+        name: 'Spiraled Main Gauche',
+        type: 'crafting',
+        rarity: 'common',
+        effect: '[parry] +1 Block.',
+        components: [
+            { componentId: 'guardvark-bones', componentName: 'Guardvark Bones', quantity: 1 },
+            { componentId: 'narsquall', componentName: 'Narsquall', quantity: 1 }
+        ],
+        materialsRequired: 6,
+        itemCost: 'silver',
+        itemSlots: 2,
+        craftingTime: '6+1d6 Hours',
+        requiresForge: true,
+        properties: ['parry']
+    },
+    {
+        id: 'stabby-needle',
+        name: 'Stabby Needle',
+        type: 'crafting',
+        rarity: 'common',
+        effect: '+1 Dread. Once every Combat, a Rascal gains Advantage on an Attack.',
+        components: [
+            { componentId: 'quillrat-needles', componentName: 'Quillrat Needles', quantity: 1 }
+        ],
+        materialsRequired: 3,
+        itemCost: 'silver',
+        itemSlots: 1,
+        craftingTime: '6+1d6 Hours',
+        requiresForge: false
+    },
+    {
+        id: 'starfell-spyglass',
+        name: 'Starfell Spyglass',
+        type: 'crafting',
+        rarity: 'rare',
+        effect: 'See objects in detail up to a mile away. Gain Advantage on Search Checks to see hidden Adversaries.',
+        components: [
+            { componentId: 'starfell-shard', componentName: 'Starfell Shard', quantity: 1 },
+            { componentId: 'glassbeam', componentName: 'Glassbeam', quantity: 1 }
+        ],
+        materialsRequired: 5,
+        itemCost: 'gold',
+        itemSlots: 1,
+        craftingTime: '1d6 Days',
+        requiresForge: false,
+        properties: ['Magnificent', 'starfell-make', 'mirrored']
+    },
+    {
+        id: 'sticker-snare',
+        name: 'Sticker Snare',
+        type: 'crafting',
+        rarity: 'common',
+        effect: 'Trap that Entangles the target. Small Adversaries suffer Disadvantage to escaping.',
+        components: [
+            { componentId: 'sticky-wickle-vines', componentName: 'Sticky Wickle Vines', quantity: 1 },
+            { componentId: 'goblin-alloy', componentName: 'Goblin Alloy', quantity: 1 }
+        ],
+        materialsRequired: 3,
+        itemCost: 'silver',
+        itemSlots: 1,
+        craftingTime: '6+1d6 Hours',
+        requiresForge: false,
+        properties: ['quick', 'trip']
+    },
+    {
+        id: 'thunderhorn-pauldrons',
+        name: 'Thunderhorn Pauldrons',
+        type: 'crafting',
+        rarity: 'rare',
+        effect: 'Piecemeal Armor. Attackers suffer 1 Dread when they Hit the wearer (ignores Block).',
+        components: [
+            { componentId: 'thunderhorn-horn', componentName: 'Thunderhorn Horn', quantity: 1 },
+            { componentId: 'bugbear-metal', componentName: 'Bugbear Metal', quantity: 1 }
+        ],
+        materialsRequired: 5,
+        itemCost: 'gold',
+        itemSlots: 1,
+        craftingTime: '1d6 Days',
+        requiresForge: true,
+        properties: ['Magnificent', 'cleave']
+    },
+    {
+        id: 'wire-worm-saw',
+        name: 'Wire Worm Saw',
+        type: 'crafting',
+        rarity: 'common',
+        effect: 'Saw through objects as tough as stone or steel.',
+        components: [
+            { componentId: 'wire-worm', componentName: 'Wire Worm', quantity: 1 }
+        ],
+        materialsRequired: 3,
+        itemCost: 'silver',
+        itemSlots: 1,
+        craftingTime: '6+1d6 Hours',
+        requiresForge: false
+    },
+    {
+        id: 'wyrmfish-scale-pauldrons',
+        name: 'Wyrmfish Scale Pauldrons',
+        type: 'crafting',
+        rarity: 'common',
+        effect: 'Piecemeal Armor. [repellent]',
+        components: [
+            { componentId: 'wyrmfish', componentName: 'Wyrmfish', quantity: 1 },
+            { componentId: 'gelk-hide', componentName: 'Gelk Hide', quantity: 1 }
+        ],
+        materialsRequired: 3,
+        itemCost: 'silver',
+        itemSlots: 1,
+        craftingTime: '6+1d6 Hours',
+        requiresForge: false,
+        properties: ['repellent', 'entangle']
+    },
+    {
+        id: 'wyrmtail-rope',
+        name: 'Wyrmtail Rope',
+        type: 'crafting',
+        rarity: 'common',
+        effect: '[superb] 100 feet of rope. 1 Slot.',
+        components: [
+            { componentId: 'wyrmtail-vine', componentName: 'Wyrmtail Vine', quantity: 1 },
+            { componentId: 'elder-root', componentName: 'Elder Root', quantity: 1 }
+        ],
+        materialsRequired: 3,
+        itemCost: 'silver',
+        itemSlots: 1,
+        craftingTime: '6+1d6 Hours',
+        requiresForge: false,
+        properties: ['superb']
+    },
+    {
+        id: 'magnificent-string-instrument',
+        name: 'Magnificent String Instrument',
+        type: 'crafting',
+        rarity: 'rare',
+        effect: 'In the hands of a Bard, Invigorate heals +1 Courage.',
+        components: [
+            { componentId: 'pocket-fiddler-silk', componentName: 'Pocket Fiddler Silk', quantity: 1 },
+            { componentId: 'wurlwood', componentName: 'Wurlwood', quantity: 1 }
+        ],
+        materialsRequired: 5,
+        itemCost: 'gold',
+        itemSlots: 1,
+        craftingTime: '1d6 Days',
+        requiresForge: false,
+        properties: ['Magnificent', 'reach']
     }
 ];
 

@@ -5,12 +5,13 @@ import { allRecipes } from "../data/recipes";
 import { useInventory } from "../context/InventoryContext";
 
 const RecipesScreen = () => {
-    const { inventory } = useInventory();
+    const { inventory, removeComponent, removeMaterials, addCraftingSession } = useInventory();
     const [selectedType, setSelectedType] = useState<RecipeType | "all">("all");
     const [selectedRecipe, setSelectedRecipe] = useState<string | null>(null);
     const [showSearch, setShowSearch] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [showCraftableOnly, setShowCraftableOnly] = useState(false);
+    const [tinkerRoll, setTinkerRoll] = useState<number | null>(null);
 
     const recipeTypes: { type: RecipeType | "all"; icon: string; label: string }[] = [
         { type: "all", icon: "📜", label: "All" },
@@ -21,10 +22,65 @@ const RecipesScreen = () => {
 
     const canCraftRecipe = (recipe: (typeof allRecipes)[0]): boolean => {
         // Check if we have all required components
-        return recipe.components.every((req) => {
+        const hasComponents = recipe.components.every((req) => {
             const inInventory = inventory.components.get(req.componentId) || 0;
             return inInventory >= req.quantity;
         });
+
+        // Check if we have required materials
+        const hasMaterials = !recipe.materialsRequired || inventory.materials >= recipe.materialsRequired;
+
+        // Check if we have required tools
+        let hasTools = true;
+        if (recipe.type === "alchemy") {
+            hasTools = inventory.tools.alchemySet;
+        } else if (recipe.type === "cooking") {
+            hasTools = inventory.tools.cookware;
+        } else if (recipe.type === "crafting") {
+            hasTools = inventory.tools.standardCraftingTools || inventory.tools.masterCraftingTools;
+        }
+
+        // Check forge requirement
+        const hasForge = !recipe.requiresForge || inventory.tools.forgeAccess !== "none";
+
+        return hasComponents && hasMaterials && hasTools && hasForge;
+    };
+
+    const getMissingRequirements = (recipe: (typeof allRecipes)[0]): string[] => {
+        const missing: string[] = [];
+
+        // Check components
+        recipe.components.forEach((req) => {
+            const inInventory = inventory.components.get(req.componentId) || 0;
+            if (inInventory < req.quantity) {
+                missing.push(`${req.componentName} (need ${req.quantity}, have ${inInventory})`);
+            }
+        });
+
+        // Check materials
+        if (recipe.materialsRequired && inventory.materials < recipe.materialsRequired) {
+            missing.push(`Materials (need ${recipe.materialsRequired}, have ${inventory.materials})`);
+        }
+
+        // Check tools
+        if (recipe.type === "alchemy" && !inventory.tools.alchemySet) {
+            missing.push("Alchemy Set");
+        } else if (recipe.type === "cooking" && !inventory.tools.cookware) {
+            missing.push("Cookware");
+        } else if (
+            recipe.type === "crafting" &&
+            !inventory.tools.standardCraftingTools &&
+            !inventory.tools.masterCraftingTools
+        ) {
+            missing.push("Crafting Tools");
+        }
+
+        // Check forge
+        if (recipe.requiresForge && inventory.tools.forgeAccess === "none") {
+            missing.push("Forge Access");
+        }
+
+        return missing;
     };
 
     const filteredRecipes = allRecipes
@@ -35,6 +91,60 @@ const RecipesScreen = () => {
     const selectedRecipeData = allRecipes.find((r) => r.id === selectedRecipe);
 
     const craftableCount = allRecipes.filter(canCraftRecipe).length;
+
+    const getTinkerOutcome = (roll: number, recipeType: string) => {
+        if (recipeType === "alchemy") {
+            if (roll <= 2) return "Failure";
+            if (roll <= 5) return "Failure (can retry once)";
+            if (roll <= 8) return "Success (1 use)";
+            if (roll <= 11) return "Success (1d6 usage die)";
+            return "Success (1d8 usage die)";
+        } else if (recipeType === "cooking") {
+            if (roll <= 2) return "Inedible failure";
+            if (roll <= 5) return "Edible but no buffs (feeds 1)";
+            if (roll <= 8) return "Decent dish (feeds 2)";
+            if (roll <= 11) return "Tasty meal (feeds 3)";
+            return "Gourmet meal (feeds 4)";
+        } else {
+            // Crafting/Mundane
+            if (roll <= 2) return "Failure (lose all materials)";
+            if (roll <= 5) return "Failure (salvage 1d4 materials)";
+            if (roll <= 8) return "Success";
+            if (roll <= 11) return "Success (use 1d4 fewer materials)";
+            return "Success with Magnificent trait";
+        }
+    };
+
+    const handleCraft = (recipe: (typeof allRecipes)[0]) => {
+        if (!canCraftRecipe(recipe)) return;
+
+        const roll = Math.floor(Math.random() * 12) + 1;
+        setTinkerRoll(roll);
+        const outcome = getTinkerOutcome(roll, recipe.type);
+
+        // Record crafting session
+        addCraftingSession({
+            id: Date.now().toString(),
+            recipeId: recipe.id,
+            recipeName: recipe.name,
+            date: Date.now(),
+            tinkerCheckRoll: roll,
+            outcome,
+            materialsUsed: recipe.materialsRequired || 0,
+            componentsUsed: recipe.components,
+            itemCrafted: roll >= 6,
+            magnificentTrait: roll === 12 ? "Magnificent" : undefined,
+            notes: "",
+        });
+
+        // Consume resources
+        if (recipe.materialsRequired) {
+            removeMaterials(recipe.materialsRequired);
+        }
+        recipe.components.forEach((comp) => {
+            removeComponent(comp.componentId, comp.quantity);
+        });
+    };
 
     const getRarityColor = (rarity: string) => {
         switch (rarity) {
@@ -161,7 +271,29 @@ const RecipesScreen = () => {
                             {searchQuery
                                 ? "Try a different search term"
                                 : showCraftableOnly
-                                ? "Collect more components to craft recipes"
+                                ? (() => {
+                                      const missingTools =
+                                          !inventory.tools.alchemySet ||
+                                          !inventory.tools.cookware ||
+                                          (!inventory.tools.standardCraftingTools &&
+                                              !inventory.tools.masterCraftingTools);
+
+                                      if (missingTools) {
+                                          const missing = [];
+                                          if (!inventory.tools.alchemySet) missing.push("Alchemy Set");
+                                          if (!inventory.tools.cookware) missing.push("Cookware");
+                                          if (
+                                              !inventory.tools.standardCraftingTools &&
+                                              !inventory.tools.masterCraftingTools
+                                          )
+                                              missing.push("Crafting Tools");
+
+                                          return `Missing tools: ${missing.join(
+                                              ", "
+                                          )}. Get them from the Inventory screen (⚙️) to unlock recipes!`;
+                                      }
+                                      return "Collect more components or get the required tools from Inventory (⚙️)";
+                                  })()
                                 : "Add more recipes to your collection"}
                         </Text>
                     </View>
@@ -255,9 +387,55 @@ const RecipesScreen = () => {
                                         </View>
                                     )}
 
+                                    {/* Crafting Section */}
+                                    {tinkerRoll === null ? (
+                                        <>
+                                            {!canCraftRecipe(selectedRecipeData) && (
+                                                <View style={styles.missingRequirementsCard}>
+                                                    <Text style={styles.missingTitle}>⚠️ Missing Requirements:</Text>
+                                                    {getMissingRequirements(selectedRecipeData).map((req, index) => (
+                                                        <Text key={index} style={styles.missingItem}>
+                                                            • {req}
+                                                        </Text>
+                                                    ))}
+                                                </View>
+                                            )}
+                                            <TouchableOpacity
+                                                style={[
+                                                    styles.craftButton,
+                                                    !canCraftRecipe(selectedRecipeData) && styles.craftButtonDisabled,
+                                                ]}
+                                                onPress={() => handleCraft(selectedRecipeData)}
+                                                disabled={!canCraftRecipe(selectedRecipeData)}
+                                            >
+                                                <Text style={styles.craftButtonText}>
+                                                    {canCraftRecipe(selectedRecipeData)
+                                                        ? "🎲 Craft Now"
+                                                        : "🔒 Cannot Craft"}
+                                                </Text>
+                                            </TouchableOpacity>
+                                        </>
+                                    ) : (
+                                        <View style={styles.rollResultCard}>
+                                            <Text style={styles.rollNumber}>Roll: {tinkerRoll}</Text>
+                                            <Text style={styles.rollOutcome}>
+                                                {getTinkerOutcome(tinkerRoll, selectedRecipeData.type)}
+                                            </Text>
+                                            <TouchableOpacity
+                                                style={styles.craftAnotherButton}
+                                                onPress={() => setTinkerRoll(null)}
+                                            >
+                                                <Text style={styles.craftAnotherText}>Craft Another</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    )}
+
                                     <TouchableOpacity
                                         style={styles.closeButton}
-                                        onPress={() => setSelectedRecipe(null)}
+                                        onPress={() => {
+                                            setSelectedRecipe(null);
+                                            setTinkerRoll(null);
+                                        }}
                                     >
                                         <Text style={styles.closeButtonText}>Close</Text>
                                     </TouchableOpacity>
@@ -522,6 +700,60 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: "#8b7355",
     },
+    craftButton: {
+        backgroundColor: "#d4a574",
+        paddingVertical: 16,
+        borderRadius: 8,
+        alignItems: "center",
+        marginBottom: 8,
+    },
+    craftButtonDisabled: {
+        backgroundColor: "#3d2415",
+        opacity: 0.5,
+    },
+    craftButtonText: {
+        color: "#2c1810",
+        fontSize: 18,
+        fontWeight: "bold",
+    },
+    craftWarning: {
+        fontSize: 12,
+        color: "#c96d6d",
+        textAlign: "center",
+        marginBottom: 12,
+    },
+    rollResultCard: {
+        backgroundColor: "#3d2415",
+        padding: 20,
+        borderRadius: 12,
+        alignItems: "center",
+        marginBottom: 12,
+        borderWidth: 2,
+        borderColor: "#d4a574",
+    },
+    rollNumber: {
+        fontSize: 48,
+        fontWeight: "bold",
+        color: "#d4a574",
+        marginBottom: 12,
+    },
+    rollOutcome: {
+        fontSize: 16,
+        color: "#f5e6d3",
+        textAlign: "center",
+        marginBottom: 16,
+    },
+    craftAnotherButton: {
+        backgroundColor: "#4a2c2a",
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 8,
+    },
+    craftAnotherText: {
+        color: "#d4a574",
+        fontSize: 14,
+        fontWeight: "600",
+    },
     closeButton: {
         backgroundColor: "#4a2c2a",
         paddingVertical: 14,
@@ -533,6 +765,26 @@ const styles = StyleSheet.create({
         color: "#a0826d",
         fontSize: 16,
         fontWeight: "600",
+    },
+    missingRequirementsCard: {
+        backgroundColor: "#3d2415",
+        padding: 16,
+        borderRadius: 8,
+        marginBottom: 16,
+        borderWidth: 2,
+        borderColor: "#c96d6d",
+    },
+    missingTitle: {
+        fontSize: 16,
+        fontWeight: "bold",
+        color: "#f5e6d3",
+        marginBottom: 12,
+    },
+    missingItem: {
+        fontSize: 14,
+        color: "#c96d6d",
+        marginBottom: 6,
+        lineHeight: 20,
     },
 });
 

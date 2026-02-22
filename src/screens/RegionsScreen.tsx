@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList, TextInput } from "react-native";
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList, TextInput, Modal } from "react-native";
 import { ComponentType } from "../types";
 import { allComponents } from "../data/components";
 
@@ -17,6 +17,7 @@ const RegionsScreen = () => {
     const [selectedType, setSelectedType] = useState<ComponentType | "all">("all");
     const [showSearch, setShowSearch] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
+    const [selectedComponent, setSelectedComponent] = useState<string | null>(null);
 
     const componentTypes: { type: ComponentType | "all"; icon: string; label: string }[] = [
         { type: "all", icon: "📦", label: "All" },
