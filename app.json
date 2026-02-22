@@ -1,0 +1,23 @@
+{
+  "expo": {
+    "name": "Land of Eem Crafting Tracker",
+    "slug": "eem-crafting-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#4a2c2a"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.eemcrafting.app"
+    },
+    "android": {
+      "package": "com.eemcrafting.app"
+    },
+    "plugins": [
+      "expo-sqlite"
+    ]
+  }
+}

@@ -1,0 +1,51 @@
+## Plan for Land of Eem Crafting Tracker App
+
+I've analyzed the crafting.txt file and identified a comprehensive crafting system with:
+- **200+ Components** across 4 types (Beast, Elemental, Fish, Herb)
+- **300+ Recipes** (Alchemy, Cooking, Crafting)
+- **6 Regions** with different component availability
+- **Complex crafting mechanics** with materials, tools, forges, and tinker checks
+
+### Requirements Document Structure
+
+I'll create a comprehensive requirements.md that includes:
+
+#### 1. **Executive Summary**
+   - App purpose and target users
+   - Key features overview
+
+#### 2. **Core Features**
+   - **Component Tracking**: Manage inventory of Beast, Elemental, Fish, and Herb components
+   - **Recipe Browser**: Searchable database of 300+ recipes (Alchemy, Cooking, Crafting)
+   - **Crafting Calculator**: Calculate materials needed and check component availability
+   - **Regional Reference**: Component location lookup by region
+   - **Crafting Simulator**: Tinker check results and outcome tracking
+   - **Material Management**: Track abstracted materials and tools
+
+#### 3. **Data Models**
+   - Components (with descriptions, recipes, regions)
+   - Recipes (with requirements, effects, rarity)
+   - Materials & Tools inventory
+   - User crafting sessions/history
+
+#### 4. **User Interface Requirements**
+   - Component inventory management screens
+   - Recipe search and filter functionality
+   - Crafting workspace with ingredient checker
+   - Regional component reference guide
+
+#### 5. **Technical Requirements**
+   - React Native Expo framework
+   - Local database (SQLite/Realm) or AsyncStorage
+   - Offline-first functionality
+   - Cross-platform (iOS & Android)
+
+#### 6. **Future Enhancements**
+   - Character profiles with multiple inventories
+   - Shopping lists for needed components
+   - Crafting session tracking and history
+   - Export/import inventory data
+
+Would you like me to proceed with creating this requirements.md document? Or would you like to adjust any aspects of the plan first?
+
+Once you're satisfied with the plan, please **toggle to Act mode** so I can create the actual requirements document.
