@@ -104,7 +104,7 @@ const HistoryScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#1a0f08",
+        backgroundColor: "#e8dfd4",
     },
     content: {
         flex: 1,
@@ -121,13 +121,13 @@ const styles = StyleSheet.create({
     },
     emptyStateText: {
         fontSize: 18,
-        color: "#f5e6d3",
+        color: "#2d2520",
         fontWeight: "600",
         marginBottom: 8,
     },
     emptyStateSubtext: {
         fontSize: 14,
-        color: "#a0826d",
+        color: "#5a4a3d",
         textAlign: "center",
         paddingHorizontal: 40,
     },
@@ -135,12 +135,12 @@ const styles = StyleSheet.create({
         padding: 16,
     },
     historyCard: {
-        backgroundColor: "#2c1810",
+        backgroundColor: "#ffffff",
         borderRadius: 12,
         padding: 16,
         marginBottom: 12,
         borderWidth: 2,
-        borderColor: "#4a2c2a",
+        borderColor: "#d4c4b4",
     },
     cardHeader: {
         flexDirection: "row",
@@ -155,12 +155,12 @@ const styles = StyleSheet.create({
     recipeName: {
         fontSize: 18,
         fontWeight: "bold",
-        color: "#f5e6d3",
+        color: "#2d2520",
         marginBottom: 4,
     },
     dateText: {
         fontSize: 12,
-        color: "#8b7355",
+        color: "#8a7a6d",
     },
     rollBadge: {
         width: 48,
@@ -172,13 +172,13 @@ const styles = StyleSheet.create({
     rollText: {
         fontSize: 20,
         fontWeight: "bold",
-        color: "#2c1810",
+        color: "#2d2520",
     },
     outcomeSection: {
         marginBottom: 12,
         paddingVertical: 8,
         paddingHorizontal: 12,
-        backgroundColor: "#3d2415",
+        backgroundColor: "#f9f3e8",
         borderRadius: 8,
     },
     outcomeText: {
@@ -189,12 +189,12 @@ const styles = StyleSheet.create({
         marginBottom: 12,
         paddingVertical: 8,
         paddingHorizontal: 12,
-        backgroundColor: "#4a2c2a",
+        backgroundColor: "#fff9e6",
         borderRadius: 8,
     },
     traitText: {
         fontSize: 14,
-        color: "#d4a574",
+        color: "#c8a063",
         fontWeight: "600",
     },
     resourcesSection: {
@@ -207,21 +207,21 @@ const styles = StyleSheet.create({
     },
     resourceLabel: {
         fontSize: 13,
-        color: "#a0826d",
+        color: "#5a4a3d",
     },
     resourceValue: {
         fontSize: 13,
-        color: "#f5e6d3",
+        color: "#2d2520",
         fontWeight: "600",
     },
     componentsList: {
         borderTopWidth: 1,
-        borderTopColor: "#3d2415",
+        borderTopColor: "#d4c4b4",
         paddingTop: 12,
     },
     componentText: {
         fontSize: 12,
-        color: "#a0826d",
+        color: "#5a4a3d",
         paddingVertical: 2,
     },
 });

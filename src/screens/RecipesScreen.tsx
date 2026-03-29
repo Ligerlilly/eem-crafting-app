@@ -149,13 +149,13 @@ const RecipesScreen = () => {
     const getRarityColor = (rarity: string) => {
         switch (rarity) {
             case "common":
-                return "#a0826d";
+                return "#8a7a6d";
             case "rare":
-                return "#d4a574";
+                return "#c8a063";
             case "witchcraft":
-                return "#8b4789";
+                return "#9b7eb5";
             default:
-                return "#a0826d";
+                return "#8a7a6d";
         }
     };
 
@@ -452,16 +452,16 @@ const RecipesScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#1a0f08",
+        backgroundColor: "#e8dfd4",
     },
     // NEW: Compact Header
     header: {
-        backgroundColor: "#2c1810",
+        backgroundColor: "#f5ede1",
         paddingTop: 12,
         paddingBottom: 8,
         paddingHorizontal: 16,
         borderBottomWidth: 1,
-        borderBottomColor: "#4a2c2a",
+        borderBottomColor: "#d4c4b4",
     },
     headerTop: {
         flexDirection: "row",
@@ -471,20 +471,20 @@ const styles = StyleSheet.create({
     headerTitle: {
         fontSize: 20,
         fontWeight: "bold",
-        color: "#f5e6d3",
+        color: "#2d2520",
         flex: 1,
     },
     headerIcon: {
         width: 36,
         height: 36,
         borderRadius: 18,
-        backgroundColor: "#3d2415",
+        backgroundColor: "#f9f3e8",
         alignItems: "center",
         justifyContent: "center",
         marginLeft: 8,
     },
     headerIconActive: {
-        backgroundColor: "#4a9d5f",
+        backgroundColor: "#7ab087",
     },
     headerIconText: {
         fontSize: 18,
@@ -495,7 +495,7 @@ const styles = StyleSheet.create({
     },
     statText: {
         fontSize: 12,
-        color: "#a0826d",
+        color: "#5a4a3d",
         fontWeight: "600",
     },
     searchRow: {
@@ -505,31 +505,33 @@ const styles = StyleSheet.create({
     },
     searchInput: {
         flex: 1,
-        backgroundColor: "#3d2415",
-        color: "#f5e6d3",
+        backgroundColor: "#ffffff",
+        color: "#2d2520",
         paddingHorizontal: 12,
         paddingVertical: 8,
         borderRadius: 8,
         fontSize: 14,
+        borderWidth: 1,
+        borderColor: "#d4c4b4",
     },
     clearButton: {
         width: 32,
         height: 32,
         borderRadius: 16,
-        backgroundColor: "#4a2c2a",
+        backgroundColor: "#d4c4b4",
         alignItems: "center",
         justifyContent: "center",
         marginLeft: 8,
     },
     clearButtonText: {
-        color: "#a0826d",
+        color: "#5a4a3d",
         fontSize: 20,
         fontWeight: "bold",
     },
     // Compact filters
     filterScroll: {
         maxHeight: 50,
-        backgroundColor: "#2c1810",
+        backgroundColor: "#f5ede1",
     },
     filterContainer: {
         paddingHorizontal: 16,
@@ -542,23 +544,25 @@ const styles = StyleSheet.create({
         paddingVertical: 6,
         marginRight: 8,
         borderRadius: 16,
-        backgroundColor: "#3d2415",
+        backgroundColor: "#ffffff",
         height: 32,
+        borderWidth: 1,
+        borderColor: "#d4c4b4",
     },
     filterButtonActive: {
-        backgroundColor: "#d4a574",
+        backgroundColor: "#c8a063",
     },
     filterIcon: {
         fontSize: 16,
         marginRight: 4,
     },
     filterText: {
-        color: "#a0826d",
+        color: "#5a4a3d",
         fontSize: 13,
         fontWeight: "600",
     },
     filterTextActive: {
-        color: "#2c1810",
+        color: "#2d2520",
     },
     recipeList: {
         flex: 1,
@@ -567,15 +571,15 @@ const styles = StyleSheet.create({
         paddingBottom: 12,
     },
     recipeCard: {
-        backgroundColor: "#2c1810",
+        backgroundColor: "#ffffff",
         borderRadius: 12,
         padding: 14,
         marginBottom: 10,
-        borderWidth: 1,
-        borderColor: "#4a2c2a",
+        borderWidth: 2,
+        borderColor: "#d4c4b4",
     },
     recipeCardCraftable: {
-        borderColor: "#4a9d5f",
+        borderColor: "#7ab087",
         borderWidth: 2,
     },
     recipeHeader: {
@@ -587,7 +591,7 @@ const styles = StyleSheet.create({
     recipeName: {
         fontSize: 16,
         fontWeight: "600",
-        color: "#f5e6d3",
+        color: "#2d2520",
         flex: 1,
     },
     rarityBadge: {
@@ -597,14 +601,14 @@ const styles = StyleSheet.create({
         marginLeft: 8,
     },
     rarityText: {
-        color: "#2c1810",
+        color: "#ffffff",
         fontSize: 12,
         fontWeight: "bold",
         textTransform: "uppercase",
     },
     recipeEffect: {
         fontSize: 14,
-        color: "#a0826d",
+        color: "#5a4a3d",
         marginBottom: 10,
     },
     recipeFooter: {
@@ -614,7 +618,7 @@ const styles = StyleSheet.create({
     },
     componentCount: {
         fontSize: 12,
-        color: "#8b7355",
+        color: "#8a7a6d",
     },
     emptyState: {
         alignItems: "center",
@@ -627,13 +631,13 @@ const styles = StyleSheet.create({
     },
     emptyStateText: {
         fontSize: 18,
-        color: "#f5e6d3",
+        color: "#2d2520",
         fontWeight: "600",
         marginBottom: 8,
     },
     emptyStateSubtext: {
         fontSize: 14,
-        color: "#a0826d",
+        color: "#5a4a3d",
         textAlign: "center",
         paddingHorizontal: 40,
     },
@@ -645,13 +649,13 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     modalContent: {
-        backgroundColor: "#2c1810",
+        backgroundColor: "#ffffff",
         margin: 20,
         marginTop: 60,
         borderRadius: 16,
         padding: 24,
         borderWidth: 2,
-        borderColor: "#4a2c2a",
+        borderColor: "#c8a063",
     },
     modalHeader: {
         flexDirection: "row",
@@ -662,7 +666,7 @@ const styles = StyleSheet.create({
     modalTitle: {
         fontSize: 24,
         fontWeight: "bold",
-        color: "#f5e6d3",
+        color: "#2d2520",
         flex: 1,
         marginRight: 12,
     },
@@ -672,12 +676,12 @@ const styles = StyleSheet.create({
     modalLabel: {
         fontSize: 16,
         fontWeight: "600",
-        color: "#d4a574",
+        color: "#c8a063",
         marginBottom: 8,
     },
     modalText: {
         fontSize: 14,
-        color: "#f5e6d3",
+        color: "#2d2520",
         lineHeight: 20,
     },
     componentRow: {
@@ -686,103 +690,103 @@ const styles = StyleSheet.create({
         alignItems: "center",
         paddingVertical: 8,
         borderBottomWidth: 1,
-        borderBottomColor: "#3d2415",
+        borderBottomColor: "#d4c4b4",
     },
     componentName: {
         fontSize: 14,
-        color: "#f5e6d3",
+        color: "#2d2520",
         flex: 1,
     },
     componentMissing: {
-        color: "#c96d6d",
+        color: "#c97676",
     },
     componentInventory: {
         fontSize: 12,
-        color: "#8b7355",
+        color: "#8a7a6d",
     },
     craftButton: {
-        backgroundColor: "#d4a574",
+        backgroundColor: "#c8a063",
         paddingVertical: 16,
         borderRadius: 8,
         alignItems: "center",
         marginBottom: 8,
     },
     craftButtonDisabled: {
-        backgroundColor: "#3d2415",
+        backgroundColor: "#d4c4b4",
         opacity: 0.5,
     },
     craftButtonText: {
-        color: "#2c1810",
+        color: "#2d2520",
         fontSize: 18,
         fontWeight: "bold",
     },
     craftWarning: {
         fontSize: 12,
-        color: "#c96d6d",
+        color: "#c97676",
         textAlign: "center",
         marginBottom: 12,
     },
     rollResultCard: {
-        backgroundColor: "#3d2415",
+        backgroundColor: "#f9f3e8",
         padding: 20,
         borderRadius: 12,
         alignItems: "center",
         marginBottom: 12,
         borderWidth: 2,
-        borderColor: "#d4a574",
+        borderColor: "#c8a063",
     },
     rollNumber: {
         fontSize: 48,
         fontWeight: "bold",
-        color: "#d4a574",
+        color: "#c8a063",
         marginBottom: 12,
     },
     rollOutcome: {
         fontSize: 16,
-        color: "#f5e6d3",
+        color: "#2d2520",
         textAlign: "center",
         marginBottom: 16,
     },
     craftAnotherButton: {
-        backgroundColor: "#4a2c2a",
+        backgroundColor: "#d4c4b4",
         paddingVertical: 10,
         paddingHorizontal: 20,
         borderRadius: 8,
     },
     craftAnotherText: {
-        color: "#d4a574",
+        color: "#2d2520",
         fontSize: 14,
         fontWeight: "600",
     },
     closeButton: {
-        backgroundColor: "#4a2c2a",
+        backgroundColor: "#d4c4b4",
         paddingVertical: 14,
         borderRadius: 8,
         alignItems: "center",
         marginTop: 8,
     },
     closeButtonText: {
-        color: "#a0826d",
+        color: "#2d2520",
         fontSize: 16,
         fontWeight: "600",
     },
     missingRequirementsCard: {
-        backgroundColor: "#3d2415",
+        backgroundColor: "#fff5f5",
         padding: 16,
         borderRadius: 8,
         marginBottom: 16,
         borderWidth: 2,
-        borderColor: "#c96d6d",
+        borderColor: "#c97676",
     },
     missingTitle: {
         fontSize: 16,
         fontWeight: "bold",
-        color: "#f5e6d3",
+        color: "#2d2520",
         marginBottom: 12,
     },
     missingItem: {
         fontSize: 14,
-        color: "#c96d6d",
+        color: "#c97676",
         marginBottom: 6,
         lineHeight: 20,
     },

@@ -18,23 +18,30 @@ export default function App() {
     return (
         <InventoryProvider>
             <SafeAreaProvider>
-                <StatusBar barStyle="light-content" />
+                <StatusBar barStyle="dark-content" />
                 <NavigationContainer>
                     <Tab.Navigator
                         screenOptions={{
-                            tabBarActiveTintColor: "#d4a574",
-                            tabBarInactiveTintColor: "#8b7355",
+                            tabBarActiveTintColor: "#c8a063",
+                            tabBarInactiveTintColor: "#8a7a6d",
                             tabBarStyle: {
-                                backgroundColor: "#2c1810",
-                                borderTopColor: "#4a2c2a",
+                                backgroundColor: "#f5ede1",
+                                borderTopColor: "#d4c4b4",
                             },
                             headerStyle: {
-                                backgroundColor: "#4a2c2a",
+                                backgroundColor: "#c8a063",
                             },
-                            headerTintColor: "#f5e6d3",
+                            headerTintColor: "#2d2520",
                             headerTitleStyle: {
                                 fontWeight: "bold",
                             },
+                            tabBarIcon: () => null,
+                            tabBarLabelStyle: {
+                                fontSize: 14,
+                                fontWeight: "600",
+                            },
+                            tabBarLabelPosition: "beside-icon",
+                            tabBarIconStyle: { display: "none" },
                         }}
                     >
                         <Tab.Screen

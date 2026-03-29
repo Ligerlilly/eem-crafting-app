@@ -1,23 +1,44 @@
 {
   "expo": {
-    "name": "Land of Eem Crafting Tracker",
+    "name": "Eem Crafting Companion",
     "slug": "eem-crafting-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "userInterfaceStyle": "automatic",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
     "splash": {
+      "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#4a2c2a"
+      "backgroundColor": "#e8dfd4"
     },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.eemcrafting.app"
+      "bundleIdentifier": "com.eemcrafting.app",
+      "buildNumber": "1",
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "This app does not access your photo library.",
+        "NSCameraUsageDescription": "This app does not use the camera."
+      }
     },
     "android": {
-      "package": "com.eemcrafting.app"
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#e8dfd4"
+      },
+      "package": "com.eemcrafting.app",
+      "versionCode": 1,
+      "permissions": []
     },
     "plugins": [
       "expo-sqlite"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "0b3acce7-81d6-4227-a704-33a8067d5ae8"
+      }
+    }
   }
 }
