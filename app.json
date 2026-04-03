@@ -20,7 +20,8 @@
       "buildNumber": "1",
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "This app does not access your photo library.",
-        "NSCameraUsageDescription": "This app does not use the camera."
+        "NSCameraUsageDescription": "This app does not use the camera.",
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
