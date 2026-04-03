@@ -2,7 +2,7 @@
   "expo": {
     "name": "Eem Crafting Companion",
     "slug": "eem-crafting-app",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -17,7 +17,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.eemcrafting.app",
-      "buildNumber": "1",
+      "buildNumber": "2",
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "This app does not access your photo library.",
         "NSCameraUsageDescription": "This app does not use the camera.",
@@ -30,7 +30,7 @@
         "backgroundColor": "#e8dfd4"
       },
       "package": "com.eemcrafting.app",
-      "versionCode": 1,
+      "versionCode": 2,
       "permissions": []
     },
     "plugins": [
