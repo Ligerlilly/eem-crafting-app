@@ -1,9 +1,19 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList, TextInput, Modal, Switch } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import type { NavigationProp } from "@react-navigation/native";
 import { ComponentType, ForgeAccess } from "../types";
 import { useInventory } from "../context/InventoryContext";
+import { allRecipes } from "../data/recipes";
+
+type RootTabParamList = {
+    Inventory: undefined;
+    Recipes: { recipeId?: string };
+    History: undefined;
+};
 
 const InventoryScreen = () => {
+    const navigation = useNavigation<NavigationProp<RootTabParamList>>();
     const { inventory, components, addComponent, removeComponent, addMaterials, removeMaterials, updateTools } =
         useInventory();
     const [selectedType, setSelectedType] = useState<ComponentType | "all">("all");
@@ -201,7 +211,27 @@ const InventoryScreen = () => {
                                     {selectedComp.recipes.length > 0 && (
                                         <View style={styles.modalSection}>
                                             <Text style={styles.modalLabel}>Used in recipes:</Text>
-                                            <Text style={styles.modalText}>{selectedComp.recipes.join(", ")}</Text>
+                                            <View style={styles.recipePillsContainer}>
+                                                {selectedComp.recipes.map((recipeName, index) => {
+                                                    const recipe = allRecipes.find((r) => r.name === recipeName);
+                                                    return (
+                                                        <TouchableOpacity
+                                                            key={index}
+                                                            style={styles.recipePill}
+                                                            onPress={() => {
+                                                                if (recipe) {
+                                                                    setSelectedComponent(null);
+                                                                    navigation.navigate("Recipes", {
+                                                                        recipeId: recipe.id,
+                                                                    });
+                                                                }
+                                                            }}
+                                                        >
+                                                            <Text style={styles.recipePillText}>{recipeName}</Text>
+                                                        </TouchableOpacity>
+                                                    );
+                                                })}
+                                            </View>
                                         </View>
                                     )}
 
@@ -790,6 +820,25 @@ const styles = StyleSheet.create({
     },
     forgeButtonTextActive: {
         color: "#2d2520",
+    },
+    recipePillsContainer: {
+        flexDirection: "row",
+        flexWrap: "wrap",
+        gap: 8,
+        marginTop: 4,
+    },
+    recipePill: {
+        backgroundColor: "#c8a063",
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+        borderRadius: 12,
+        borderWidth: 1,
+        borderColor: "#a0826d",
+    },
+    recipePillText: {
+        color: "#2d2520",
+        fontSize: 13,
+        fontWeight: "600",
     },
 });
 

@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList, Modal, TextInput } from "react-native";
+import { useRoute, useFocusEffect } from "@react-navigation/native";
 import { RecipeType } from "../types";
 import { allRecipes } from "../data/recipes";
 import { useInventory } from "../context/InventoryContext";
 
 const RecipesScreen = () => {
+    const route = useRoute();
     const { inventory, removeComponent, removeMaterials, addCraftingSession } = useInventory();
     const [selectedType, setSelectedType] = useState<RecipeType | "all">("all");
     const [selectedRecipe, setSelectedRecipe] = useState<string | null>(null);
@@ -12,6 +14,16 @@ const RecipesScreen = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [showCraftableOnly, setShowCraftableOnly] = useState(false);
     const [tinkerRoll, setTinkerRoll] = useState<number | null>(null);
+
+    // Handle navigation from Inventory screen
+    useFocusEffect(
+        React.useCallback(() => {
+            const params = route.params as { recipeId?: string } | undefined;
+            if (params?.recipeId) {
+                setSelectedRecipe(params.recipeId);
+            }
+        }, [route]),
+    );
 
     const recipeTypes: { type: RecipeType | "all"; icon: string; label: string }[] = [
         { type: "all", icon: "📜", label: "All" },
@@ -264,37 +276,37 @@ const RecipesScreen = () => {
                             {searchQuery
                                 ? "No recipes found"
                                 : showCraftableOnly
-                                ? "No craftable recipes"
-                                : `No ${selectedType} recipes found`}
+                                  ? "No craftable recipes"
+                                  : `No ${selectedType} recipes found`}
                         </Text>
                         <Text style={styles.emptyStateSubtext}>
                             {searchQuery
                                 ? "Try a different search term"
                                 : showCraftableOnly
-                                ? (() => {
-                                      const missingTools =
-                                          !inventory.tools.alchemySet ||
-                                          !inventory.tools.cookware ||
-                                          (!inventory.tools.standardCraftingTools &&
-                                              !inventory.tools.masterCraftingTools);
+                                  ? (() => {
+                                        const missingTools =
+                                            !inventory.tools.alchemySet ||
+                                            !inventory.tools.cookware ||
+                                            (!inventory.tools.standardCraftingTools &&
+                                                !inventory.tools.masterCraftingTools);
 
-                                      if (missingTools) {
-                                          const missing = [];
-                                          if (!inventory.tools.alchemySet) missing.push("Alchemy Set");
-                                          if (!inventory.tools.cookware) missing.push("Cookware");
-                                          if (
-                                              !inventory.tools.standardCraftingTools &&
-                                              !inventory.tools.masterCraftingTools
-                                          )
-                                              missing.push("Crafting Tools");
+                                        if (missingTools) {
+                                            const missing = [];
+                                            if (!inventory.tools.alchemySet) missing.push("Alchemy Set");
+                                            if (!inventory.tools.cookware) missing.push("Cookware");
+                                            if (
+                                                !inventory.tools.standardCraftingTools &&
+                                                !inventory.tools.masterCraftingTools
+                                            )
+                                                missing.push("Crafting Tools");
 
-                                          return `Missing tools: ${missing.join(
-                                              ", "
-                                          )}. Get them from the Inventory screen (⚙️) to unlock recipes!`;
-                                      }
-                                      return "Collect more components or get the required tools from Inventory (⚙️)";
-                                  })()
-                                : "Add more recipes to your collection"}
+                                            return `Missing tools: ${missing.join(
+                                                ", ",
+                                            )}. Get them from the Inventory screen (⚙️) to unlock recipes!`;
+                                        }
+                                        return "Collect more components or get the required tools from Inventory (⚙️)";
+                                    })()
+                                  : "Add more recipes to your collection"}
                         </Text>
                     </View>
                 }
