@@ -25,13 +25,19 @@ const InventoryScreen = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [materialsInput, setMaterialsInput] = useState("");
     const [showOwnedOnly, setShowOwnedOnly] = useState(false);
+    const lastProcessedComponentId = React.useRef<string | null>(null);
 
     // Handle navigation from Recipes screen
     useFocusEffect(
         React.useCallback(() => {
             const params = route.params as { componentId?: string } | undefined;
-            if (params?.componentId) {
+            if (params?.componentId && params.componentId !== lastProcessedComponentId.current) {
+                lastProcessedComponentId.current = params.componentId;
                 setSelectedComponent(params.componentId);
+            } else if (!params?.componentId) {
+                // Close modal and reset when navigating to tab without params
+                lastProcessedComponentId.current = null;
+                setSelectedComponent(null);
             }
         }, [route]),
     );

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList, Modal, TextInput } from "react-native";
 import { useRoute, useNavigation, useFocusEffect } from "@react-navigation/native";
 import type { NavigationProp } from "@react-navigation/native";
@@ -22,13 +22,20 @@ const RecipesScreen = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [showCraftableOnly, setShowCraftableOnly] = useState(false);
     const [tinkerRoll, setTinkerRoll] = useState<number | null>(null);
+    const lastProcessedRecipeId = useRef<string | null>(null);
 
     // Handle navigation from Inventory screen
     useFocusEffect(
         React.useCallback(() => {
             const params = route.params as { recipeId?: string } | undefined;
-            if (params?.recipeId) {
+            if (params?.recipeId && params.recipeId !== lastProcessedRecipeId.current) {
+                lastProcessedRecipeId.current = params.recipeId;
                 setSelectedRecipe(params.recipeId);
+            } else if (!params?.recipeId) {
+                // Close modal and reset when navigating to tab without params
+                lastProcessedRecipeId.current = null;
+                setSelectedRecipe(null);
+                setTinkerRoll(null);
             }
         }, [route]),
     );
