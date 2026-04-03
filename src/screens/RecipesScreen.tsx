@@ -1,12 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList, Modal, TextInput } from "react-native";
-import { useRoute, useFocusEffect } from "@react-navigation/native";
+import { useRoute, useNavigation, useFocusEffect } from "@react-navigation/native";
+import type { NavigationProp } from "@react-navigation/native";
 import { RecipeType } from "../types";
 import { allRecipes } from "../data/recipes";
 import { useInventory } from "../context/InventoryContext";
 
+type RootTabParamList = {
+    Inventory: { componentId?: string };
+    Recipes: { recipeId?: string };
+    History: undefined;
+};
+
 const RecipesScreen = () => {
     const route = useRoute();
+    const navigation = useNavigation<NavigationProp<RootTabParamList>>();
     const { inventory, removeComponent, removeMaterials, addCraftingSession } = useInventory();
     const [selectedType, setSelectedType] = useState<RecipeType | "all">("all");
     const [selectedRecipe, setSelectedRecipe] = useState<string | null>(null);
@@ -347,19 +355,33 @@ const RecipesScreen = () => {
                                             const inInventory = inventory.components.get(comp.componentId) || 0;
                                             const hasEnough = inInventory >= comp.quantity;
                                             return (
-                                                <View key={index} style={styles.componentRow}>
-                                                    <Text
-                                                        style={[
-                                                            styles.componentName,
-                                                            !hasEnough && styles.componentMissing,
-                                                        ]}
-                                                    >
-                                                        {hasEnough ? "✓" : "✗"} {comp.componentName} x{comp.quantity}
-                                                    </Text>
+                                                <TouchableOpacity
+                                                    key={index}
+                                                    style={styles.componentRow}
+                                                    onPress={() => {
+                                                        setSelectedRecipe(null);
+                                                        setTinkerRoll(null);
+                                                        navigation.navigate("Inventory", {
+                                                            componentId: comp.componentId,
+                                                        });
+                                                    }}
+                                                >
+                                                    <View style={styles.componentNameContainer}>
+                                                        <Text
+                                                            style={[
+                                                                styles.componentName,
+                                                                !hasEnough && styles.componentMissing,
+                                                            ]}
+                                                        >
+                                                            {hasEnough ? "✓" : "✗"} {comp.componentName} x
+                                                            {comp.quantity}
+                                                        </Text>
+                                                        <Text style={styles.tapHint}>→</Text>
+                                                    </View>
                                                     <Text style={styles.componentInventory}>
                                                         ({inInventory} in inventory)
                                                     </Text>
-                                                </View>
+                                                </TouchableOpacity>
                                             );
                                         })}
                                     </View>
@@ -700,14 +722,30 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        paddingVertical: 8,
+        paddingVertical: 12,
+        paddingHorizontal: 8,
         borderBottomWidth: 1,
         borderBottomColor: "#d4c4b4",
+        borderRadius: 8,
+        backgroundColor: "#f9f3e8",
+        marginBottom: 4,
+    },
+    componentNameContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        flex: 1,
     },
     componentName: {
         fontSize: 14,
         color: "#2d2520",
         flex: 1,
+        fontWeight: "600",
+    },
+    tapHint: {
+        fontSize: 16,
+        color: "#c8a063",
+        marginLeft: 8,
+        fontWeight: "bold",
     },
     componentMissing: {
         color: "#c97676",

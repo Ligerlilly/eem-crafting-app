@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList, TextInput, Modal, Switch } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute, useFocusEffect } from "@react-navigation/native";
 import type { NavigationProp } from "@react-navigation/native";
 import { ComponentType, ForgeAccess } from "../types";
 import { useInventory } from "../context/InventoryContext";
@@ -14,6 +14,7 @@ type RootTabParamList = {
 
 const InventoryScreen = () => {
     const navigation = useNavigation<NavigationProp<RootTabParamList>>();
+    const route = useRoute();
     const { inventory, components, addComponent, removeComponent, addMaterials, removeMaterials, updateTools } =
         useInventory();
     const [selectedType, setSelectedType] = useState<ComponentType | "all">("all");
@@ -24,6 +25,16 @@ const InventoryScreen = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [materialsInput, setMaterialsInput] = useState("");
     const [showOwnedOnly, setShowOwnedOnly] = useState(false);
+
+    // Handle navigation from Recipes screen
+    useFocusEffect(
+        React.useCallback(() => {
+            const params = route.params as { componentId?: string } | undefined;
+            if (params?.componentId) {
+                setSelectedComponent(params.componentId);
+            }
+        }, [route]),
+    );
 
     const componentTypes: { type: ComponentType | "all"; icon: string; label: string }[] = [
         { type: "all", icon: "📦", label: "All" },
