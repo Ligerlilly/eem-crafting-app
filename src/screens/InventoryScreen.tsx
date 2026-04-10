@@ -25,6 +25,7 @@ const InventoryScreen = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [materialsInput, setMaterialsInput] = useState("");
     const [showOwnedOnly, setShowOwnedOnly] = useState(false);
+    const [showMaterialsInline, setShowMaterialsInline] = useState(false);
     const lastProcessedComponentId = React.useRef<string | null>(null);
 
     // Handle navigation from Recipes screen
@@ -103,9 +104,55 @@ const InventoryScreen = () => {
                 </View>
                 <View style={styles.statsRow}>
                     <Text style={styles.statText}>📦 {totalComponents} Components</Text>
-                    <Text style={styles.statText}>💎 {inventory.materials} Materials</Text>
+                    <TouchableOpacity onPress={() => setShowMaterialsInline(!showMaterialsInline)}>
+                        <Text style={[styles.statText, showMaterialsInline && styles.statTextActive]}>
+                            💎 {inventory.materials} Materials {showMaterialsInline ? "▲" : "▼"}
+                        </Text>
+                    </TouchableOpacity>
                     <Text style={styles.statText}>⚒️ {toolsCount} Tools</Text>
                 </View>
+                {showMaterialsInline && (
+                    <View style={styles.materialsInlineRow}>
+                        <TouchableOpacity style={styles.matQuickBtn} onPress={() => removeMaterials(1)}>
+                            <Text style={styles.matQuickBtnText}>−1</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.matQuickBtn} onPress={() => addMaterials(1)}>
+                            <Text style={styles.matQuickBtnText}>+1</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.matQuickBtn} onPress={() => addMaterials(5)}>
+                            <Text style={styles.matQuickBtnText}>+5</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.matQuickBtn} onPress={() => addMaterials(10)}>
+                            <Text style={styles.matQuickBtnText}>+10</Text>
+                        </TouchableOpacity>
+                        <TextInput
+                            style={styles.matInlineInput}
+                            placeholder="Amt"
+                            placeholderTextColor="#a0826d"
+                            keyboardType="number-pad"
+                            value={materialsInput}
+                            onChangeText={setMaterialsInput}
+                            onSubmitEditing={() => {
+                                const amt = parseInt(materialsInput) || 0;
+                                if (amt > 0) addMaterials(amt);
+                                else if (amt < 0) removeMaterials(Math.abs(amt));
+                                setMaterialsInput("");
+                            }}
+                        />
+                        <TouchableOpacity
+                            style={[styles.matQuickBtn, styles.matAddBtn, !materialsInput && styles.matAddBtnDisabled]}
+                            onPress={() => {
+                                const amt = parseInt(materialsInput) || 0;
+                                if (amt > 0) addMaterials(amt);
+                                else if (amt < 0) removeMaterials(Math.abs(amt));
+                                setMaterialsInput("");
+                            }}
+                            disabled={!materialsInput}
+                        >
+                            <Text style={styles.matQuickBtnText}>+ Add</Text>
+                        </TouchableOpacity>
+                    </View>
+                )}
                 {showSearch && (
                     <View style={styles.searchRow}>
                         <TextInput
@@ -301,47 +348,6 @@ const InventoryScreen = () => {
                     <ScrollView style={styles.modalScroll}>
                         <View style={styles.modalContent}>
                             <Text style={styles.modalTitle}>⚙️ Tools & Settings</Text>
-
-                            {/* Materials Management */}
-                            <View style={styles.modalSection}>
-                                <Text style={styles.modalLabel}>💎 Materials: {inventory.materials}</Text>
-                                <View style={styles.materialsRow}>
-                                    <TextInput
-                                        style={styles.materialsInput}
-                                        placeholder="Custom amount"
-                                        placeholderTextColor="#a0826d"
-                                        keyboardType="number-pad"
-                                        value={materialsInput}
-                                        onChangeText={setMaterialsInput}
-                                    />
-                                    <TouchableOpacity
-                                        style={styles.miniButton}
-                                        onPress={() => {
-                                            const amount = parseInt(materialsInput) || 0;
-                                            if (amount > 0) {
-                                                addMaterials(amount);
-                                                setMaterialsInput("");
-                                            }
-                                        }}
-                                    >
-                                        <Text style={styles.miniButtonText}>+ Add</Text>
-                                    </TouchableOpacity>
-                                </View>
-                                <View style={styles.materialsRow}>
-                                    <TouchableOpacity style={styles.quickButton} onPress={() => addMaterials(1)}>
-                                        <Text style={styles.quickButtonText}>+1</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={styles.quickButton} onPress={() => addMaterials(5)}>
-                                        <Text style={styles.quickButtonText}>+5</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={styles.quickButton} onPress={() => addMaterials(10)}>
-                                        <Text style={styles.quickButtonText}>+10</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={styles.quickButton} onPress={() => removeMaterials(1)}>
-                                        <Text style={styles.quickButtonText}>-1</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
 
                             {/* Tools */}
                             <View style={styles.modalSection}>
@@ -856,6 +862,50 @@ const styles = StyleSheet.create({
         color: "#2d2520",
         fontSize: 13,
         fontWeight: "600",
+    },
+    statTextActive: {
+        color: "#c8a063",
+    },
+    materialsInlineRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 6,
+        marginTop: 8,
+        paddingTop: 8,
+        borderTopWidth: 1,
+        borderTopColor: "#d4c4b4",
+    },
+    matQuickBtn: {
+        backgroundColor: "#c8a063",
+        paddingHorizontal: 10,
+        paddingVertical: 6,
+        borderRadius: 8,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    matQuickBtnText: {
+        color: "#2d2520",
+        fontSize: 13,
+        fontWeight: "700",
+    },
+    matInlineInput: {
+        width: 56,
+        backgroundColor: "#ffffff",
+        color: "#2d2520",
+        paddingHorizontal: 8,
+        paddingVertical: 6,
+        borderRadius: 8,
+        fontSize: 13,
+        borderWidth: 1,
+        borderColor: "#d4c4b4",
+        textAlign: "center",
+    },
+    matAddBtn: {
+        backgroundColor: "#7ab087",
+    },
+    matAddBtnDisabled: {
+        backgroundColor: "#d4c4b4",
     },
 });
 
