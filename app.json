@@ -17,7 +17,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.eemcrafting.app",
-      "buildNumber": "2",
+      "buildNumber": "3",
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "This app does not access your photo library.",
         "NSCameraUsageDescription": "This app does not use the camera.",
@@ -30,7 +30,7 @@
         "backgroundColor": "#e8dfd4"
       },
       "package": "com.eemcrafting.app",
-      "versionCode": 2,
+      "versionCode": 3,
       "permissions": []
     },
     "plugins": [
